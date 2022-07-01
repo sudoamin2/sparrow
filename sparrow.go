@@ -1,0 +1,3 @@
+package sparrow
+
+// proxy pattern
