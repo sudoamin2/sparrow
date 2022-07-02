@@ -1,24 +1,29 @@
 package sparrow
 
 import (
-	"errors"
 	"net"
 )
 
-type client struct {
-	server net.Addr
-	addr   net.Addr
-}
+func Dial(addr net.Addr) (*Conn, error) {
+	// TODO,
+	// arp
+	c := &Conn{
+		state: 1, // waiting for start result
+		// client/server ip:port, mac
 
-// try to init xdp or use an intialized global xdp
-// find the mac of server
-// send start packet
+		startResultCh: make(chan error),
+		readCh: make(chan []byte),
+	}
 
-func (c *client) connect() (*Conn, error) {
-	// conn.Client = c
-	return nil, errors.New("unimplemented client.connect")
-}
+	c.SequenceNumber += 1
+	if err := s.send(c, Segment{
+		Flag:           FlagStart,
+		SequenceNumber: c.SequenceNumber,
+		ReqID:          0,
+		Lenght:         15,
+	}); err != nil {
+		return nil, err
+	}
 
-func findClientAddr() net.Addr {
-	return nil
+	return c, <-c.startResultCh
 }
